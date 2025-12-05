@@ -1,180 +1,154 @@
-🩺 Retinal Disease Detection using CLIP + DenseNet Fusion
-Deep Learning Project – Diabetic Retinopathy Grading
+project:
+  title: "Retinal Disease Detection using CLIP + DenseNet Fusion"
+  type: "Deep Learning Project"
+  task: "Diabetic Retinopathy Grading"
+
+description: |
+  This project implements a dual-feature deep learning system for
+  diabetic retinopathy classification. The architecture fuses CLIP
+  (global semantic features) and DenseNet121 (local lesion features)
+  to achieve high accuracy and strong clinical reliability.
+
+features:
+  fusion_model:
+    name: "CLIP + DenseNet121 Fusion"
+    details:
+      - Dual feature extraction pipelines
+      - Combines semantic and structural retinal features
+      - More accurate than single backbone CNNs
+      - Robust to lighting & image quality variations
+
+  multi_class_classification:
+    classes:
+      - "0 : No DR"
+      - "1 : Mild"
+      - "2 : Moderate"
+      - "3 : Severe"
+      - "4 : Proliferative DR"
+    notes:
+      - Softmax multi-class disease grading
+
+  explainability:
+    method: "Grad-CAM"
+    focuses_on:
+      - Microaneurysms
+      - Hemorrhages
+      - Exudates
+      - Vascular abnormalities
+
+results:
+  overall:
+    accuracy: 85.45
+    macro_f1: 0.73
+    weighted_f1: 0.85
+    qwk: 0.92
+
+  class_wise:
+    - class: "0 - No DR"
+      precision: 0.9682
+      recall: 0.9861
+      f1: 0.9771
+
+    - class: "1 - Mild"
+      precision: 0.6667
+      recall: 0.5778
+      f1: 0.6190
+
+    - class: "2 - Moderate"
+      precision: 0.7429
+      recall: 0.8595
+      f1: 0.7969
+
+    - class: "3 - Severe"
+      precision: 0.6667
+      recall: 0.4348
+      f1: 0.5263
+
+    - class: "4 - Proliferative"
+      precision: 0.8846
+      recall: 0.6571
+      f1: 0.7541
+
+baseline_models:
+  - model: "CLIP + DenseNet (Proposed)"
+    performance: "85.45% Accuracy, QWK = 0.92"
+
+  - model: "DenseNet121"
+    performance: "97.30% Accuracy"
+
+  - model: "AlexNet"
+    performance: "97.90% Accuracy"
+
+  - model: "ResNet50"
+    performance: "85.28% Accuracy"
+
+  - model: "EfficientNet-B3"
+    performance: "~0.821 QWK"
+
+  - model: "Vision Transformer (ViT)"
+    performance: "98.79% Accuracy"
+
+dataset:
+  name: "APTOS 2019 Blindness Detection"
+  url: "https://www.kaggle.com/competitions/aptos2019-blindness-detection/"
+  details:
+    - Real retinal fundus images
+    - 5-class DR severity labels
+    - Raw clinical image variations (illumination, focus, blur)
+  preprocessing:
+    - Resize and normalization
+    - Rotation
+    - Brightness adjustment
+    - Gaussian noise
+    - Random cropping
+
+architecture:
+  clip_encoder:
+    description: |
+      Extracts global semantic features and retains robustness to
+      noise, illumination, and camera variations.
+
+  densenet121:
+    description: |
+      Captures fine-grained retinal abnormalities such as
+      microaneurysms, hemorrhages, exudates, and vessel distortions.
+
+  fusion_layer:
+    description: |
+      Concatenates CLIP and DenseNet embeddings and aligns the dimensions
+      using a projection layer to form a unified representation.
+
+  classifier:
+    description: "Fully connected neural layers with softmax output."
+
+training_pipeline:
+  stage_1:
+    description: "Freeze CLIP and DenseNet; train only classifier + projection layers."
+
+  stage_2:
+    description: "Fine-tune DenseNet; selectively unfreeze CLIP; apply lower learning rate."
+
+  hyperparameters:
+    optimizer: "Adam"
+    learning_rate_initial: 1e-4
+    learning_rate_finetune: 1e-5
+    batch_size: 16
+    loss_function: "CrossEntropy"
+
+usage:
+  steps:
+    - "Clone the repository"
+    - "Install dependencies"
+    - "Place dataset inside /data/"
+    - "Run training notebook or training script"
+    - "Evaluate using evaluation script"
+    - "Generate Grad-CAM visualizations"
+    - "Predict on custom images"
+
+future_work:
+  - Add glaucoma and AMD detection
+  - Improve model lightweight deployment for mobile screening
+  - Integrate advanced attention-based explainability
+  - Expand dataset diversity
+  - Add OOD detection for safety
 
-This repository contains an advanced deep learning model for automatic Retinal Disease Detection, specifically focusing on Diabetic Retinopathy (DR) severity classification.
-
-The system integrates CLIP (for global semantic feature extraction) and DenseNet121 (for fine-grained retinal lesion detection) into a fusion-based architecture, achieving high accuracy and strong clinical reliability.
-
-🚀 Features
-✅ Fusion Model (CLIP + DenseNet121)
-
-Dual feature extraction pipelines
-
-Combines global semantic and local structural information
-
-Improved accuracy over single-backbone models
-
-More robust to lighting and image quality variations
-
-✅ Multi-Class DR Severity Classification
-
-Classifies images into 5 DR levels:
-
-0: No DR
-
-1: Mild
-
-2: Moderate
-
-3: Severe
-
-4: Proliferative DR
-
-Softmax multi-class prediction
-
-✅ Explainability (Grad-CAM)
-
-Identifies clinically meaningful areas such as:
-
-Microaneurysms
-
-Hemorrhages
-
-Exudates
-
-Vascular abnormalities
-
-Enhances interpretability and supports medical validation
-
-✅ Strong Performance Metrics
-
-85.45% Accuracy
-
-Quadratic Weighted Kappa (QWK): 0.92
-
-Detailed class-wise precision/recall/F1 scores
-
-Confusion matrix for performance visualization
-
-✅ Baseline Comparison
-
-Models compared against the proposed hybrid model:
-
-Model	Accuracy / QWK
-CLIP + DenseNet Fusion	85.45%, QWK = 0.92
-DenseNet121	97.30%
-AlexNet	97.90%
-ResNet50	85.28%
-EfficientNet-B3	~0.821 QWK
-Vision Transformer	98.79%
-📊 Results Summary
-Overall Performance
-Metric	Score
-Accuracy	85.45%
-Macro F1-Score	0.73
-Weighted F1-Score	0.85
-Quadratic Weighted Kappa (QWK)	0.92
-Class-Wise Metrics
-Class	Precision	Recall	F1-Score
-No DR (0)	0.9682	0.9861	0.9771
-Mild (1)	0.6667	0.5778	0.6190
-Moderate (2)	0.7429	0.8595	0.7969
-Severe (3)	0.6667	0.4348	0.5263
-Proliferative (4)	0.8846	0.6571	0.7541
-📁 Dataset
-
-We use the APTOS 2019 Blindness Detection dataset.
-
-🔗 https://www.kaggle.com/competitions/aptos2019-blindness-detection/
-
-Dataset Details
-
-5 DR severity levels
-
-Real-world retinal fundus images
-
-Varying resolutions and lighting conditions
-
-Preprocessing includes:
-
-Resizing & normalization
-
-Brightness adjustments
-
-Rotation
-
-Noise addition
-
-Random cropping
-
-Class imbalance handling
-
-🧠 Model Architecture
-### 1️⃣ CLIP Encoder (Global Feature Extraction)
-
-Learns semantic-level representations
-
-Handles illumination, color, and device variations
-
-Strengthens global contextual understanding
-
-2️⃣ DenseNet121 (Local Lesion Extraction)
-
-Focuses on fine-grained retinal abnormalities:
-
-Microaneurysms
-
-Hemorrhages
-
-Hard/soft exudates
-
-Blood vessel distortions
-
-3️⃣ Feature Fusion Layer
-
-Concatenates embeddings from CLIP & DenseNet
-
-Projection layer aligns feature dimensions
-
-Produces unified representation for classification
-
-4️⃣ Classification Head
-
-Fully connected neural layers
-
-Softmax output for 5 classes
-
-Trained using CrossEntropy loss
-
-5️⃣ Explainability (Grad-CAM)
-
-Highlights important disease regions
-
-Verifies clinical relevance of predictions
-
-Builds trust for medical professionals
-
-🧪 Training Pipeline
-Stage 1: Frozen Encoder Training
-
-Freeze CLIP & DenseNet
-
-Train classification + projection layers
-
-Stage 2: Fine-Tuning
-
-Unfreeze DenseNet121
-
-Selectively unfreeze CLIP layers
-
-Gradual learning-rate reduction
-
-Hyperparameters
-
-Optimizer: Adam
-
-Learning rate: 1e-4 → 1e-5
-
-Batch size: 16–32
-
-Loss function: CrossEntropy
